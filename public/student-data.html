@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students List</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
+
+    <script type="text/javascript">
+
+        let studentsData = [];
+
+        function bodyLoad() {
+            fetch('http://localhost:3000/getAllStudents')
+                .then(response => response.json())
+                .then(data => {
+                    studentsData = data;
+                    fetchData(studentsData);
+                });
+        }
+            function fetchData(data) {
+
+                const tbody = document.querySelector("tbody");
+                tbody.innerHTML = '';
+
+                data.forEach(obj => {
+                    let row = document.createElement("tr");
+
+                    let name = document.createElement("td");
+                    name.innerText = obj.Name;
+
+                    let roll = document.createElement("td");
+                    roll.innerText = obj.Roll;
+
+                    let dept = document.createElement("td");
+                    dept.innerText = obj.Dept;
+
+                    let passed = document.createElement("td");
+                    passed.innerText = (obj.Passed) ? "Passed" : "Failed";
+
+                    row.appendChild(name);
+                    row.appendChild(roll);
+                    row.appendChild(dept);
+                    row.appendChild(passed);
+
+                    tbody.appendChild(row);
+                });
+            }
+
+            function sortAsc() {
+                const sortedData = [...studentsData].sort((a, b) => a.Name.localeCompare(b.Name));
+                fetchData(sortedData);
+            }
+
+            function sortDesc() {
+                const sortedData = [...studentsData].sort((a, b) => b.Name.localeCompare(a.Name));
+                fetchData(sortedData);
+            }
+
+
+    </script>
+</head>
+
+<body onload="bodyLoad()" class="container-fluid">
+    <button class="btn btn-info btn-lg mt-2 mb-2" onclick="sortAsc()"><span
+            class="bi bi-sort-alpha-down"></span></button>
+    <button class="btn btn-info btn-lg mt-2 mb-2" onclick="sortDesc()"><span
+            class="bi bi-sort-alpha-down-alt"></span></button>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <th>Name</th>
+            <th>Roll</th>
+            <th>Department</th>
+            <th>Passed / Failed</th>
+        </thead>
+        <tbody></tbody>
+    </table>
+</body>
+
+</html>
